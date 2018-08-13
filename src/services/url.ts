@@ -146,7 +146,11 @@ class UrlService extends BaseService<UrlService.Options> {
     } else if (this.opts.redirects[url]) {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
-      WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
+      try {
+        WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
+      } catch (e) {
+        this.app.log.warn('unable to push state to browser history', e);
+      }
       this.app.flux.emit(Events.URL_UPDATED, url);
     }
   }
